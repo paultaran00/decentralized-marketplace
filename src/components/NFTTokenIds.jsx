@@ -31,6 +31,7 @@ function NFTTokenIds({inputValue, setInputValue}) {
   const [nftToSend, setNftToSend] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const NFTCollections = getCollectionsByChain(chainId);
+  const [nftToBuy, setNftToBuy] = useState();
 
   async function transfer(nft, amount, receiver) {
     const options = {
@@ -56,8 +57,8 @@ function NFTTokenIds({inputValue, setInputValue}) {
       });
   }
 
-  const handleTransferClick = (nft) => {
-    setNftToSend(nft);
+  const handleBuyClick = (nft) => {
+    setNftToBuy(nft);
     setVisibility(true);
   };
 
@@ -81,8 +82,8 @@ function NFTTokenIds({inputValue, setInputValue}) {
                     }
                   />
                 </Tooltip>,
-                <Tooltip title="List this NFT">
-                  <ShoppingCartOutlined onClick={() => alert("todo: listing nft smart contract")} />
+                <Tooltip title="Buy this NFT">
+                  <ShoppingCartOutlined onClick={() => handleBuyClick(nft)} />
                 </Tooltip>,
               ]}
               style={{ width: 240, border: "2px solid #e7eaf3" }}
@@ -125,20 +126,23 @@ function NFTTokenIds({inputValue, setInputValue}) {
               <Meta title={nft.name} />
             </Card>
           ))}
-          
       </div>
       <Modal
-        title={`Transfer ${nftToSend?.name || "NFT"}`}
+        title={`Buy ${nftToBuy?.name || "NFT"}`}
         visible={visible}
         onCancel={() => setVisibility(false)}
-        onOk={() => transfer(nftToSend, amountToSend, receiverToSend)}
-        confirmLoading={isPending}
-        okText="Send"
+        onOk={() => alert("Bought this nft")}
+        okText="Buy"
       >
-        <AddressInput autoFocus placeholder="Receiver" onChange={setReceiver} />
-        {nftToSend && nftToSend.contract_type === "erc1155" && (
-          <Input placeholder="amount to send" onChange={(e) => handleChange(e)} />
-        )}
+        <img
+          src={nftToBuy?.image}
+          style={{
+            width: "250px",
+            margin: "auto",
+            borderRadius: "10px",
+            marginBottom: "15px",
+          }}
+        />
       </Modal>
     </>
   );
