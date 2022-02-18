@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/nav.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/profile.css">
+    <link rel="stylesheet" href="assets/css/card.css">
+    <link rel="stylesheet" href="assets/css/basics.css">
+    
+    <script type="text/javascript" src="assets/js/jquery-3.4.1.js"></script>
+    <script src="assets/bootstrap/js/popper.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/moralis@0.0.184/dist/moralis.js"></script>
+    <script src="https://kit.fontawesome.com/99c803f139.js" crossorigin="anonymous"></script>
+    <script src="assets/js/clipboard.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <title>Create, buy, and sell digital artwork backed by blockchain technology</title>
+  </head>
+  <body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+      <span class="input-group searchbar">
+        <span id="exitSearchBtn">
+          <span class="exit-search">⬅️</span>
+        </span>
+        <input type="search" id="searchInput" class="form-control search-input" placeholder="Search by creator, artwork title, or wallet address" aria-label="Search by creator, artwork title, or wallet address">
+      </span>
+      <button class="btn search-button" id="searchBtn">🔍</button>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Discover</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="following.html">Following</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="learn.html">Learn</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="create" href="erc-721.html">CREATE</a>
+          </li>
+          <li class="nav-item mr-1" id="connectWalletTag">
+            <button type="button" class="btn btn-primary button-styling shadow-sm" id="connectWalletBtn">Connect</button>
+          </li>
+          <li class="nav-item dropdown mr-3" id="profileTag" style="display: none;">
+            <a class="nav-link dropdown-toggle shadow-sm" href="#" id="profile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span id="userAddress"></span>
+              <span id="spinnerBorderInNav" class="spinner-border text-primary" style="margin: 0 5px; width: 1.25rem; height: 1.25rem;" role="status">
+                <span class="sr-only">Loading...</span>
+              </span>
+              <img src="" class="shadow-sm" id="profilePhotoInNav" width="30px">
+              <img id="rankInNav" src="" width="12px" alt="seller badge">
+            </a>
+            <div class="dropdown-menu" aria-labelledby="profile">
+              <a id="myProfile" class='dropdown-item'>My Profile<span class="sr-only">(current)</span></a>
+              <a class='dropdown-item' href="edit-profile.html">Edit Profile</a>
+              <hr>
+              <a class="dropdown-item" id="disconnectWalletBtn">Disconnect Wallet</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="btn btn-light theme" id="forDarkMode">
+              <img src="assets/images-icons/darkmode.png" width="30" height="30" alt="icon to initiate dark mode theme">
+            </button>
+            <button type="button" class="btn btn-dark theme" id="forLightMode">
+              <img src="assets/images-icons/lightmode.png" width="30" height="30" alt="icon to initiate light mode theme">
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid col-11">
+      <div class="profile profileGenerated">
+        <div class="modals"></div>
+
+        <div class="profile-top-half">
+          <div class="profile-picture">
+            <span id="spinnerGrowProfilePhoto" class="spinner-grow text-light" style="width: 120px; height: 120px;" role="status">
+              <span class="sr-only">Loading...</span>
+            </span>
+            <img class="profile-photo shadow-sm" id="profilePhoto" src="" width="120" alt="profile photo">
+            <div class="seller-badge">
+              <img id="sellerRank" src="" width="32" alt="seller rank badge">
+            </div>
+          </div>
+
+          <div class="name">
+            <span id="username"></span>
+          </div>
+
+          <div class="eth-address">
+            <span id="truncatedEthAddress"></span>
+            <span id="copySpan"></span>
+          </div>
+
+          <div id="bio"></div>
+
+          <div class="social-media-tags"> <!-- if added in settings -->
+            <a id="twitter" class="social-tag" target="_blank" href=""><img src="assets/images-icons/twitterIcon.png" width="15"> <span id='twitterHandle'></span></a>
+            <a id="instagram" class="social-tag" target="_blank" href=""><img src="assets/images-icons/instagramIcon.png" width="15"> <span id='instagramHandle'></span></a>
+          </div>
+
+          <div class="follow-share d-inline-flex">
+            <button type="button" class="btn btn-light shadow-sm button-styling mr-2" id="followButton">Follow</button>
+            <button type="button" class="btn btn-success mr-2 shadow-sm button-styling" id="withdraw">Withdraw<span id="amountToWithdraw"></span></button>
+
+            <div class="dropdown">
+              <button type="button" class="btn btn-light shadow-sm button-styling" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Share
+              </button>
+              <div class="dropdown-menu">
+                <p id="dropdownMenuTitle">Share this page</p>
+                <a class="dropdown-item" target="popup" id="twitterShare">Tweet</a>
+                <a class="dropdown-item" target="popup" id="facebookShare">Facebook</a>
+                <a class="dropdown-item" id="emailShare">Email</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="tip">
+            <button type="button" class="btn btn-primary shadow-sm button-styling" id="tipButton">Send Tip</button>
+          </div>
+
+        </div>
+
+        <div class="profile-bottom-half">
+            <div class="sorting-row row">
+              <ul class="nav nav-pills" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab" data-toggle="pill" id="forSale">For Sale <span class="count-text" id='forSaleCount'></span></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab active" data-toggle="pill" id="owns">Owns <span class="count-text" id='ownsCount'></span></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab" data-toggle="pill" id="minted">Minted <span class="count-text" id='mintedCount'></span></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab" data-toggle="pill" id="liked">Liked <span class="count-text" id='likedCount'></span></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab" data-toggle="pill" id="encouraged">Encouraged <span class="count-text" id='encouragedCount'></span></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab" data-toggle="pill" id="following">Following <span class="count-text" id='followingCount'></span></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link tab" data-toggle="pill" id="followers">Followers <span class="count-text" id='followerCount'></span></a>
+                </li>
+              </ul>
+            </div>
+
+          <div class="wrapper cardDivs row">
+            <div id='loader' class="spinner-border mt-5 text-primary" style="width: 3rem; height: 3rem;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="withdrawModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id='withdrawTitle'>Withdraw Profits</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="withdrawModalBody">
+                <p id="withdrawText"></p>
+              </div>
+              <div class="modal-footer" id='withdrawFooter'>
+                 <span id="withdrawStatus"></span>
+                 <button type="button" class="btn btn-secondary button-styling" data-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-primary button-styling" id='confirmBtn'>Confirm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tipModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id='tipTitle'>Send Tip</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="tipModalBody">
+                <form>
+                  <div class="helper">
+                    <div class="input-group" id="tipInputGroup">
+                      <span class="input-title">Tip Amount</span>
+                      <input id="tipInput" required name="Amount to send" title="Tip cannot have more than 18 digits before or 15 digits after the decimal" type="text" class="form-control input-styling" placeholder="e.g. 1.69" aria-label="ether amount">
+                    </div>
+                    <span class='sub-text'>Enter amount in ETH that you want to send</span><br>
+                  </div>
+                  <div class="price-calculator price-info">
+                    <span>Tipping
+                      <span id="tipAmountInEth" class="sale-profit">0 ETH</span>
+                      <span id="tipAmountInUsd">($0.00)</span>
+                      <span id="tipToAddress"></span>
+                    </span>
+                  </div>
+                  <span class='sub-text' id="tipRegexMessage"></span>
+                </form>
+              </div>
+              <div class="modal-footer" id='tipFooter'>
+                 <span id="tipStatus"></span>
+                 <button type="button" class="btn btn-secondary button-styling" data-dismiss="modal">Close</button>
+                 <button type="button" class="btn btn-primary button-styling" disabled id='confirmTipBtn'>Send Tip</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ifWalletNotConnectedModal" class="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header center-content">
+                <h5 class="modal-title">Connect Wallet To Like/Encourage Artwork</h5>
+              </div>
+              <div class="modal-body center-content">
+                <button type="button" class="btn btn-secondary button-styling mr-2" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary button-styling" id="connectWalletModalBtn">Connect Wallet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+  <script src="assets/js/js.cookie.js"></script>
+  <script src="assets/js/nav.js"></script>
+  <script src="assets/js/profile.js"></script>
+  <script src="assets/js/abi.js"></script>
+  <script src="assets/js/connectWallet.js"></script>
+  <script src="assets/js/theme.js"></script>
+</html>
