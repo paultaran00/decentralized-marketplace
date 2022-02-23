@@ -112,6 +112,8 @@ function convertDate(str) {
 }
 
 async function getHistoryInfo(){
+  $('#loader2').css('display', 'block');
+  $(".historyTableBody").empty();
   try {
     let historyList = [];
     let ArtworkHistory = await Moralis.Cloud.run('getArtworkHistory');
@@ -165,15 +167,27 @@ async function getHistoryInfo(){
 }
 
 function AddToHistoryTable(type, from_address, to_address, momentsAgo, value){
-  let tr = `<tr>
+  let tr;
+  if (value == "Null"){
+    tr = `<tr>
                 <td>${type}</td>
-                <td>${value} ETH</td>
-                <td href="http://localhost:8000/profile.html?address=${from_address.toLowerCase()}">${from_address}</td>
-                <td href="http://localhost:8000/profile.html?address=${to_address.toLowerCase()}">${to_address}</td>
+                <td>${value}</td>
+                <td><a>${from_address}</a></td>
+                <td><a href="http://localhost:8000/profile.html?address=${to_address.toLowerCase()}">${to_address}</a></td>
                 <td>${momentsAgo}</td>
               </tr>`
+  }else{
+    tr = `<tr>
+                <td>${type}</td>
+                <td>${value} ETH</td>
+                <td><a href="http://localhost:8000/profile.html?address=${from_address.toLowerCase()}">${from_address}</a></td>
+                <td><a href="http://localhost:8000/profile.html?address=${to_address.toLowerCase()}">${to_address}</a></td>
+                <td>${momentsAgo}</td>
+              </tr>`
+  }
+  
   $('.historyTableBody').append(tr);
-  // darkmodeForDynamicContent();
+  darkmodeForDynamicContent();
 };
 
 async function getActiveArtworkInfo(){
@@ -1176,6 +1190,7 @@ function transferToken(tokenAddress, id){
       $('.modal').modal('hide');
     }
   });
+  getHistoryInfo();
 };
 
 function toAddressInput(tokenAddress, id){
@@ -1288,6 +1303,7 @@ async function buy(tokenAddress, id, price, royalty, creator){
           transferTokenQuickActionButton(tokenAddress, id, royalty, creator);
           shareQuickActionButton(tokenAddress, id);
           darkmodeForDynamicContent();
+          getHistoryInfo();
         }
       });
     } else{
@@ -1662,6 +1678,15 @@ function darkmodeForDynamicContent(){
 
     $('.description').removeClass('bg-light');
     $('.description').addClass('bg-dark');
+
+    $('.transactions-table').addClass('bg-dark');
+    $('.transactions-table').addClass('table-dark');
+
+    $('.transactions-table').removeClass('bg-light');
+    $('.transactions-table').removeClass('table-light');
+    
+
+
   } else if (darkmodeCookie == 'false') {
     $('.btn-dark').addClass('btn-light');
     $('.btn-dark').removeClass('btn-dark');
@@ -1684,5 +1709,12 @@ function darkmodeForDynamicContent(){
 
     $('.description').removeClass('bg-dark');
     $('.description').addClass('bg-light');
+
+    $('.transactions-table').removeClass('bg-dark');
+    $('.transactions-table').removeClass('table-dark');
+
+    $('.transactions-table').addClass('bg-light');
+    $('.transactions-table').addClass('table-light');
+
   }
 };
