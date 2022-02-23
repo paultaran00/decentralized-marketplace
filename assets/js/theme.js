@@ -38,6 +38,13 @@ $(document).ready(()=>{
 
     $('.description').removeClass('bg-light');
     $('.description').addClass('bg-dark');
+
+    $('.transactions-table').addClass('bg-dark');
+    $('.transactions-table').addClass('table-dark');
+
+    $('.transactions-table').removeClass('bg-light');
+    $('.transactions-table').removeClass('table-light');
+
     console.log('darkmode cookie');
 
   } else if (darkmodeCookie == 'false') {
@@ -76,6 +83,12 @@ $(document).ready(()=>{
 
     $('.description').removeClass('bg-dark');
     $('.description').addClass('bg-light');
+
+    $('.transactions-table').removeClass('bg-dark');
+    $('.transactions-table').removeClass('table-dark');
+
+    $('.transactions-table').addClass('bg-light');
+    $('.transactions-table').addClass('table-light');
 
     console.log('lightmode cookie');
   }
@@ -120,6 +133,12 @@ $(document).ready(()=>{
     $('.description').removeClass('bg-light');
     $('.description').addClass('bg-dark');
 
+    $('.transactions-table').addClass('bg-dark');
+    $('.transactions-table').addClass('table-dark');
+
+    $('.transactions-table').removeClass('bg-light');
+    $('.transactions-table').removeClass('table-light');
+
     $('.form-control').keydown(()=>{
       $('.form-control').css('color', 'white');
     });
@@ -163,6 +182,12 @@ $(document).ready(()=>{
 
     $('.description').removeClass('bg-dark');
     $('.description').addClass('bg-light');
+
+    $('.transactions-table').removeClass('bg-dark');
+    $('.transactions-table').removeClass('table-dark');
+
+    $('.transactions-table').addClass('bg-light');
+    $('.transactions-table').addClass('table-light');
 
     $('.form-control').keydown(()=>{
       $('.form-control').css('color', 'black');

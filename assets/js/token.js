@@ -117,7 +117,6 @@ async function getHistoryInfo(){
   try {
     let historyList = [];
     let ArtworkHistory = await Moralis.Cloud.run('getArtworkHistory');
-    // HistoryTable(...);
     
     for (i = 0; i < ArtworkHistory.length; i++) {
         let tokenAddressH = ArtworkHistory[i].tokenAddress;
@@ -127,7 +126,7 @@ async function getHistoryInfo(){
         let type;
 
         if (tokenAddressH.toLowerCase() + idH.toLowerCase() == token.toLowerCase()){
-          
+          console.log(ArtworkHistory[i])
           
           if (ArtworkHistory[i].from_address == "0x0000000000000000000000000000000000000000"){
             from_address = "NullAddress";
@@ -155,7 +154,7 @@ async function getHistoryInfo(){
 
     historyList.reverse();
     for (i = 0; i < historyList.length; i++){
-      AddToHistoryTable(historyList[i][0], historyList[i][1], historyList[i][2], historyList[i][4], historyList[i][5]);
+      AddToHistoryTable(historyList[i][0], historyList[i][1], historyList[i][2], historyList[i][3],historyList[i][4], historyList[i][5]);
     }
     console.log(historyList);      
     $('#loader2').css('display', 'none');
@@ -166,7 +165,7 @@ async function getHistoryInfo(){
   }
 }
 
-function AddToHistoryTable(type, from_address, to_address, momentsAgo, value){
+function AddToHistoryTable(type, from_address, to_address, created_at,momentsAgo, value){
   let tr;
   if (value == "Null"){
     tr = `<tr>
@@ -174,7 +173,7 @@ function AddToHistoryTable(type, from_address, to_address, momentsAgo, value){
                 <td>${value}</td>
                 <td><a>${from_address}</a></td>
                 <td><a href="http://localhost:8000/profile.html?address=${to_address.toLowerCase()}">${to_address}</a></td>
-                <td>${momentsAgo}</td>
+                <td><span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="${created_at}">${momentsAgo}</span></td>
               </tr>`
   }else{
     tr = `<tr>
@@ -182,7 +181,7 @@ function AddToHistoryTable(type, from_address, to_address, momentsAgo, value){
                 <td>${value} ETH</td>
                 <td><a href="http://localhost:8000/profile.html?address=${from_address.toLowerCase()}">${from_address}</a></td>
                 <td><a href="http://localhost:8000/profile.html?address=${to_address.toLowerCase()}">${to_address}</a></td>
-                <td>${momentsAgo}</td>
+                <td><span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="${created_at}">${momentsAgo}</span></td>
               </tr>`
   }
   
@@ -1190,7 +1189,9 @@ function transferToken(tokenAddress, id){
       $('.modal').modal('hide');
     }
   });
-  getHistoryInfo();
+  setTimeout(function (){
+    getHistoryInfo(); 
+  }, 1000);
 };
 
 function toAddressInput(tokenAddress, id){
@@ -1302,8 +1303,11 @@ async function buy(tokenAddress, id, price, royalty, creator){
           putForSaleQuickActionButton(tokenAddress, id, royalty, creator);
           transferTokenQuickActionButton(tokenAddress, id, royalty, creator);
           shareQuickActionButton(tokenAddress, id);
+          setTimeout(function (){
+            getHistoryInfo(); 
+          }, 1000);
+          
           darkmodeForDynamicContent();
-          getHistoryInfo();
         }
       });
     } else{
