@@ -55,6 +55,18 @@ $('#connectWalletModalBtn').click(async () =>{
   }
 });
 
+$('#history-tab').click(async ()=>{
+  $('.price-activity-chart').hide();
+  $('.transactions').show();
+  
+});
+
+$('#activity-barline').click(async ()=>{
+  $('.transactions').hide();
+  $('.price-activity-chart').show();
+  
+});
+
 function removeDuplicates(data, key){
   return [
     ...new Map(

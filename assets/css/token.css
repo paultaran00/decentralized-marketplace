@@ -265,7 +265,7 @@ a.anchor{
 } */
 
 .transactions{
-  padding: 10px 15px;
+  padding-top: 100px;
   display: none;
 }
 
@@ -278,6 +278,28 @@ a.anchor{
 
 .transactions-table{
   border-radius: 25px;
+  cursor: pointer;
+  /* height: 10px; */
+  /* width: 1200px;               */
+  /* display: -moz-groupbox; */
+}
+
+tbody{
+  overflow-y: scroll;      
+  /* height: 350px;           */
+  /* width: 1350px; */
+  /* position: absolute;
+  max-height: 50px; */
+}
+
+.history-activity{
+  position: absolute;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.price-activity-chart{
+  display: none;
 }
 
 

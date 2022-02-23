@@ -20,6 +20,7 @@
     <script src="assets/js/clipboard.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <title>Create, buy, and sell digital artwork backed by blockchain technology</title>
   </head>
   <body>
@@ -151,6 +152,17 @@
     <!-- CHART cu pretul ptr fiecare nft deasupra la tranzactii -->
     <div class="container-fluid history d-flex justify-content-center">
 
+      <div class="history-activity">
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link history-table active" data-toggle="pill" id="history-tab">History</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link activity-chart" data-toggle="pill" id="activity-barline">Activity</a>
+          </li>
+        </ul>
+      </div>
+
       <div class="transactions row">
         <table class="transactions-table table table-hover table-borderless col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <thead>
@@ -164,6 +176,10 @@
           </thead>
           <tbody class="historyTableBody"></tbody>
         </table>
+      </div>
+
+      <div class="price-activity-chart">
+
       </div>
 
       <div id='loader2' class="spinner-border mt-5 text-primary" style="width: 3rem; height: 3rem;" role="status">
