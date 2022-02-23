@@ -19,6 +19,9 @@
 #loader{
   margin: 0 auto;
 }
+#loader2{
+  margin: 0 auto;
+}
 
 .not-connected-text{
   margin: 100px auto;
@@ -263,6 +266,11 @@ a.anchor{
 
 .transactions{
   padding: 10px 15px;
+  display: none;
+}
+
+.history{
+
 }
 
 .transactions-table{

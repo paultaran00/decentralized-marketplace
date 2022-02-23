@@ -19,6 +19,7 @@
     <script src="https://kit.fontawesome.com/99c803f139.js" crossorigin="anonymous"></script>
     <script src="assets/js/clipboard.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <title>Create, buy, and sell digital artwork backed by blockchain technology</title>
   </head>
   <body>
@@ -148,50 +149,33 @@
       </div>
     </div>
     <!-- CHART cu pretul ptr fiecare nft deasupra la tranzactii -->
-    <div class="transactions row justify-content-center">
-      <table class="transactions-table table table-hover table-borderless col-xs-11 col-sm-11 col-md-11 col-lg-8 table-dark bg-dark">
-        <thead>
-          <tr>
-            <th>Event</th>
-            <th>Price</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Transfer</td>
-            <td>12 ETH</td>
-            <td>0x2180aA072E28046c40295C6d6271113af24B50d1</td>
-            <td>0x2746710b3efdbc8ba80797384052008b127ae75e</td>
-            <td>1 minute ago</td>
-          </tr>
-          <tr>
-            <td>Transfer</td>
-            <td>3 ETH</td>
-            <td>0x2746710b3efdbc8ba80797384052008b127ae75e</td>
-            <td>0x2180aA072E28046c40295C6d6271113af24B50d1</td>
-            <td>2 hours ago</td>
-          </tr>
-          <tr>
-            <td>Transfer</td>
-            <td>1 ETH</td>
-            <td>0x2180aA072E28046c40295C6d6271113af24B50d1</td>
-            <td>0x2746710b3efdbc8ba80797384052008b127ae75e</td>
-            <td>5 days ago</td>
-          </tr>
-          <tr>
-            <td>Created</td>
-            <td>Null</td>
-            <td>NullAddress</td>
-            <td>0x2180aA072E28046c40295C6d6271113af24B50d1</td>
-            <td>2 months ago</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="container-fluid d-flex justify-content-center">
+
+      <div class="transactions row">
+        <table class="transactions-table table table-hover table-borderless col-xs-11 col-sm-11 col-md-11 col-lg-8 table-dark bg-dark">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Price</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody class="historyTableBody">
+      
+          </tbody>
+        </table>
+      </div>
+
+      <div id='loader2' class="spinner-border mt-5 text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
     </div>
 
+    
+    
+ 
   </body>
   <script src="assets/js/theme.js"></script>
   <script src="assets/js/nav.js"></script>

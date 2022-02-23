@@ -15,12 +15,14 @@ let url = new URL(url_string);
 let token = url.searchParams.get('token');
 
 $(document).ready(async function(){
+  // $('.transactions').hide();
   web3 = await Moralis.Web3.enable();
   TokenInstance = new web3.eth.Contract(abi.Token, TokenAddress);
   MarketplaceInstance = new web3.eth.Contract(abi.Marketplace, MarketplaceAddress);
   ethPrice = await getEthPrice();
   getActiveArtworkInfo();
   getInactiveArtworkInfo();
+  getHistoryInfo();
 });
 
 async function getEthPrice(){
@@ -99,6 +101,80 @@ async function getCurrentOwner(){
     console.log(err);
   }
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function convertDate(str) {
+  var date = new Date(str),
+      mnth = ("0" + (date.getMonth()+1)).slice(-2),
+      day  = ("0" + date.getDate()).slice(-2);
+      hours  = ("0" + date.getHours()).slice(-2);
+      minutes = ("0" + date.getMinutes()).slice(-2);
+  return (date.getFullYear()+"/"+mnth+"/"+day+" "+hours+":"+minutes);
+}
+
+async function getHistoryInfo(){
+  try {
+    let historyList = [];
+    let ArtworkHistory = await Moralis.Cloud.run('getArtworkHistory');
+    // HistoryTable(...);
+    
+    for (i = 0; i < ArtworkHistory.length; i++) {
+        let tokenAddressH = ArtworkHistory[i].tokenAddress;
+        let idH = ArtworkHistory[i].tokenId;
+        let from_address;
+        let valueH;
+        let type;
+
+        if (tokenAddressH.toLowerCase() + idH.toLowerCase() == token.toLowerCase()){
+          
+          
+          if (ArtworkHistory[i].from_address == "0x0000000000000000000000000000000000000000"){
+            from_address = "NullAddress";
+          }else{
+            from_address = ArtworkHistory[i].from_address;
+          }
+
+          if (web3.utils.fromWei(ArtworkHistory[i].value, 'ether') == "0"){
+            valueH = "Null";
+          }else{
+            valueH = web3.utils.fromWei(ArtworkHistory[i].value, 'ether');
+          }
+          if (from_address == "NullAddress"){
+            type = "Created"
+          }else{
+            type = "Transfer"
+          }
+          let to_address = ArtworkHistory[i].to_address;
+          let created_at = convertDate(ArtworkHistory[i].created_at);
+          let momentsAgo = moment(ArtworkHistory[i].created_at).fromNow();
+          
+          historyList.push([type, from_address, to_address, created_at, momentsAgo, valueH]);
+        }
+    }
+
+    historyList.reverse();
+    for (i = 0; i < historyList.length; i++){
+      AddToHistoryTable(historyList[i][0], historyList[i][1], historyList[i][2], historyList[i][4], historyList[i][5]);
+    }
+    console.log(historyList);      
+    $('#loader2').css('display', 'none');
+    
+    $('.transactions').show();
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+function AddToHistoryTable(type, from_address, to_address, momentsAgo, value){
+  let tr = `<tr>
+                <td>${type}</td>
+                <td>${value} ETH</td>
+                <td href="http://localhost:8000/profile.html?address=${from_address.toLowerCase()}">${from_address}</td>
+                <td href="http://localhost:8000/profile.html?address=${to_address.toLowerCase()}">${to_address}</td>
+                <td>${momentsAgo}</td>
+              </tr>`
+  $('.historyTableBody').append(tr);
+  // darkmodeForDynamicContent();
+};
 
 async function getActiveArtworkInfo(){
   try {
@@ -106,7 +182,8 @@ async function getActiveArtworkInfo(){
     let owner = await getCurrentOwner();
 
     let activeArtwork = await Moralis.Cloud.run('getArtwork');
-    console.log(activeArtwork)
+    console.log(activeArtwork);
+    console.log(activeArtwork[i].tokenAddress);
     for (i = 0; i < activeArtwork.length; i++) {
       if(activeArtwork[i].active == true){
         let tokenAddress = activeArtwork[i].tokenAddress;
@@ -1406,6 +1483,7 @@ function cardDiv(tokenAddress, id, owner, creator, path){
   $('.cardDiv').prepend(nftCard);
   darkmodeForDynamicContent();
 };
+
 
 function changePriceModalHTML(tokenAddress, id){
   let changePriceModal = `<div class="modal fade" id="changePriceModal`+tokenAddress+id+`" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">

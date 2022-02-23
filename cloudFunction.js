@@ -41,6 +41,31 @@ Moralis.Cloud.define("getArtwork", async (request) => {
   return results;
 });
 
+Moralis.Cloud.define("getArtworkHistory", async (request) => {
+  const query = new Moralis.Query("EthNFTTransfers");
+  const query2 = new Moralis.Query("EthTransactions");
+  const queryResults = await query.find();
+  const queryResults2 = await query2.find();
+  const results = [];
+
+  for (let i = 0; i < queryResults.length; ++i) {
+    for (let j = 0; j < queryResults2.length; ++j){
+      if (queryResults[i].attributes.transaction_hash == queryResults2[j].attributes.hash){
+        results.push({
+          "tokenId": queryResults[i].attributes.token_id,
+          "tokenAddress": queryResults[i].attributes.token_address,
+          "from_address": queryResults[i].attributes.from_address,
+          "to_address": queryResults[i].attributes.to_address,
+          "created_at": queryResults[i].attributes.createdAt,
+          "value": queryResults2[j].attributes.value
+        });
+      }
+    }
+  }
+  return results;
+});
+
+
 Moralis.Cloud.define("getAllUsers", async (request) => {
   const query = new Moralis.Query("User");
   const queryResults = await query.find({useMasterKey: true})
