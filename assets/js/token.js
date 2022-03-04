@@ -58,12 +58,20 @@ $('#connectWalletModalBtn').click(async () =>{
 $('#history-tab').click(async ()=>{
   $('.price-activity-chart').hide();
   $('.transactions').show();
+
+  $('#activity-barline').removeClass('active');
+  $('#history-tab').removeClass('active');
+  $('#history-tab').addClass('active');
   
 });
 
 $('#activity-barline').click(async ()=>{
   $('.transactions').hide();
   $('.price-activity-chart').show();
+
+  $('#history-tab').removeClass('active');
+  $('#activity-barline').removeClass('active');
+  $('#activity-barline').addClass('active');
   
 });
 
@@ -113,7 +121,7 @@ async function getCurrentOwner(){
     console.log(err);
   }
 };
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function convertDate(str) {
   var date = new Date(str),
       mnth = ("0" + (date.getMonth()+1)).slice(-2),
@@ -123,58 +131,270 @@ function convertDate(str) {
   return (date.getFullYear()+"/"+mnth+"/"+day+" "+hours+":"+minutes);
 }
 
+function convertDateOnly(str) {
+  var date = new Date(str),
+      mnth = ("0" + (date.getMonth()+1)).slice(-2),
+      day  = ("0" + date.getDate()).slice(-2);
+      hours  = ("0" + date.getHours()).slice(-2);
+      minutes = ("0" + date.getMinutes()).slice(-2);
+  return (date.getFullYear()+"/"+mnth+"/"+day);
+}
+
+async function getTransactionValue(hash){
+  const params = {
+    tran_hash: hash,
+  };
+  let valueTransaction = await Moralis.Cloud.run('getTransactionValue', params);
+  return valueTransaction;
+}
+
+
 async function getHistoryInfo(){
+  $('.transactions').hide();
+  $('.price-activity-chart').hide();
   $('#loader2').css('display', 'block');
   $(".historyTableBody").empty();
+  
   try {
     let historyList = [];
-    let ArtworkHistory = await Moralis.Cloud.run('getArtworkHistory');
-    
+    let datesChart = [];
+    let valuesChart = [];
+    let txhash_list = [];
+    let txhash_price = [];
+    const params = {
+      idparam: token.slice(token.length - 1),
+    };
+    let ArtworkHistory = await Moralis.Cloud.run('getArtworkHistory', params);
+    console.log(ArtworkHistory)
+
     for (i = 0; i < ArtworkHistory.length; i++) {
+        console.log(ArtworkHistory.length)
         let tokenAddressH = ArtworkHistory[i].tokenAddress;
         let idH = ArtworkHistory[i].tokenId;
-        let from_address;
-        let valueH;
+        let transactionHash = ArtworkHistory[i].transaction_hash
+        let from_address = ArtworkHistory[i].from_address;
+        let to_address = ArtworkHistory[i].to_address;
+        let created_at = new Date(ArtworkHistory[i].created_at);
+        // convertDate(ArtworkHistory[i].created_at);
+        let momentsAgo = moment(ArtworkHistory[i].created_at).fromNow();
         let type;
-
-        if (tokenAddressH.toLowerCase() + idH.toLowerCase() == token.toLowerCase()){
-          console.log(ArtworkHistory[i])
-          
-          if (ArtworkHistory[i].from_address == "0x0000000000000000000000000000000000000000"){
-            from_address = "NullAddress";
-          }else{
-            from_address = ArtworkHistory[i].from_address;
-          }
-
-          if (web3.utils.fromWei(ArtworkHistory[i].value, 'ether') == "0"){
-            valueH = "Null";
-          }else{
-            valueH = web3.utils.fromWei(ArtworkHistory[i].value, 'ether');
-          }
-          if (from_address == "NullAddress"){
-            type = "Created"
-          }else{
-            type = "Transfer"
-          }
-          let to_address = ArtworkHistory[i].to_address;
-          let created_at = convertDate(ArtworkHistory[i].created_at);
-          let momentsAgo = moment(ArtworkHistory[i].created_at).fromNow();
-          
-          historyList.push([type, from_address, to_address, created_at, momentsAgo, valueH]);
+        if (from_address == "0x0000000000000000000000000000000000000000"){
+          type = "Created"
+        }else{
+          type = "Transfer"
         }
+        // let valueH = await getTransactionValue(transactionHash);
+        
+        // setTimeout(()=>{
+          if (from_address == "0x0000000000000000000000000000000000000000"){
+            if(ArtworkHistory.length == 1){
+              from_address = "NullAddress&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            }else{            
+              from_address = "NullAddress";
+            }
+          }
+  
+          
+          
+          
+  
+          historyList.push([type, from_address, to_address, created_at, momentsAgo, transactionHash]);
+          txhash_list.push(transactionHash);
+          console.log(i+"leeeen "+historyList.length);
+          // datesChart.push(created_at);
+          // valuesChart.push(valueH);
+        // },100);
+    }
+    console.log(historyList)
+    console.log(txhash_list)
+    try {
+      const promises = txhash_list.map(async tx => {
+        obj = {};
+        val = await getTransactionValue(tx);
+        obj[tx] = val;
+        return obj;
+      })
+
+      const list = await Promise.all(promises)
+      txhash_price = list;
+    }
+    catch (exception_var) {
+      console.log(txhash_price)
     }
 
+    for (i = 0; i < historyList.length; i++){
+        for (var key in txhash_price[0]) {
+          if (txhash_price[0].hasOwnProperty(key)) {
+              if (historyList[i][5] == key){
+                valueH = txhash_price[0][key]
+                if (web3.utils.fromWei(valueH, 'ether') == "0"){
+                  valueH = "Null";
+                }else{
+                  valueH = web3.utils.fromWei(valueH, 'ether');
+                }
+                historyList[i][5] = valueH
+              }
+          }
+        }
+        
+    }
+  
+    console.log("aiciii")
+    console.log(txhash_price)
+
+  // setTimeout(()=>{
+    historyList = historyList.sort(function(a, b) {
+      var c = new Date(a[3]);
+      var d = new Date(b[3]);
+      return c-d;
+    });
+
+    // historyList = Array.from(new Set(historyList.map(JSON.stringify)), JSON.parse)
+
+    for (i = 0; i < historyList.length; i++){
+      historyList[i][3] = convertDate(historyList[i][3])
+      datesChart.push(historyList[i][3]);
+      valuesChart.push(historyList[i][5]);
+    }
     historyList.reverse();
     for (i = 0; i < historyList.length; i++){
       AddToHistoryTable(historyList[i][0], historyList[i][1], historyList[i][2], historyList[i][3],historyList[i][4], historyList[i][5]);
     }
-    console.log(historyList);      
+    console.log(historyList);
+    datesChart.shift();
+    valuesChart.shift();
+    makeChart(datesChart, valuesChart);      
     $('#loader2').css('display', 'none');
+    if ($("#history-tab").hasClass("active")){
+      $('.transactions').show();
+    }else{
+      $('.price-activity-chart').show();
+    }
+    $('.history-activity').show();
     
-    $('.transactions').show();
+    
+    darkmodeForDynamicContent();
+    // },150);
+    
   } catch (err) {
     console.log(err);
   }
+}
+
+function makeChart(dates, values){
+  const labels = dates;
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Price',
+        data: values,
+        borderColor: "rgb(54, 162, 235)",
+        backgroundColor: "rgb(54, 162, 235, 1)",
+        stack: 'combined'
+      },
+      {
+        label: 'Price',
+        data: values,
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgb(255, 99, 132, 0.7)",
+        stack: 'combined',
+        type: 'bar'
+      }
+    ]
+  };
+  let configDark;
+  let configLight;
+
+  configDark = {
+    type: 'line',
+    data: data,
+    options: {
+      plugins: {
+        title: {
+          display: true,
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          stacked: false,
+          ticks: {
+            color: '#ffffff'
+          },
+          grid: {
+            color: "rgba(255, 255, 255, 0.48)"
+          }
+        },
+        x: {
+          ticks: {
+            display: false,
+            color: '#ffffff'
+          },
+          grid: {
+            color: 'rgba(0, 0, 0, 0.18)'
+          }
+        },
+      }
+    },
+  };
+
+  configLight = {
+    type: 'line',
+    data: data,
+    options: {
+      plugins: {
+        title: {
+          display: true,
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          stacked: false,
+          ticks: {
+            color: '#000000'
+          },
+          grid: {
+            color: "rgba(0, 0, 0, 0.48)"
+          }
+        },
+        x: {
+          ticks: {
+            color: '#000000'
+          },
+          grid: {
+            color: 'rgba(230, 230, 230, 0.38)'
+          }
+        },
+      }
+    },
+  };
+  try{
+    var graphDark = Chart.getChart('ChartDark')
+    graphDark.destroy();
+    var graphLight = Chart.getChart('ChartLight')
+    graphLight.destroy();
+  } catch (err) {
+    // console.log(err);
+  }
+  
+  
+  var ChartDark = new Chart(
+    document.getElementById('ChartDark'),
+    configDark
+  );
+
+  var ChartLight = new Chart(
+    document.getElementById('ChartLight'),
+    configLight
+  );
+  
+
 }
 
 function AddToHistoryTable(type, from_address, to_address, created_at,momentsAgo, value){
@@ -208,7 +428,6 @@ async function getActiveArtworkInfo(){
 
     let activeArtwork = await Moralis.Cloud.run('getArtwork');
     console.log(activeArtwork);
-    console.log(activeArtwork[i].tokenAddress);
     for (i = 0; i < activeArtwork.length; i++) {
       if(activeArtwork[i].active == true){
         let tokenAddress = activeArtwork[i].tokenAddress;
@@ -1700,6 +1919,10 @@ function darkmodeForDynamicContent(){
 
     $('.transactions-table').removeClass('bg-light');
     $('.transactions-table').removeClass('table-light');
+
+    $('#ChartLight').hide();
+    $('#ChartDark').show();
+    
     
 
 
@@ -1731,6 +1954,9 @@ function darkmodeForDynamicContent(){
 
     $('.transactions-table').addClass('bg-light');
     $('.transactions-table').addClass('table-light');
+
+    $('#ChartDark').hide();
+    $('#ChartLight').show();
 
   }
 };

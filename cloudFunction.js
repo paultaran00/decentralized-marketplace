@@ -43,26 +43,33 @@ Moralis.Cloud.define("getArtwork", async (request) => {
 
 Moralis.Cloud.define("getArtworkHistory", async (request) => {
   const query = new Moralis.Query("EthNFTTransfers");
-  const query2 = new Moralis.Query("EthTransactions");
+  query.equalTo("token_id", request.params.idparam);
   const queryResults = await query.find();
-  const queryResults2 = await query2.find();
   const results = [];
-
   for (let i = 0; i < queryResults.length; ++i) {
-    for (let j = 0; j < queryResults2.length; ++j){
-      if (queryResults[i].attributes.transaction_hash == queryResults2[j].attributes.hash){
-        results.push({
-          "tokenId": queryResults[i].attributes.token_id,
-          "tokenAddress": queryResults[i].attributes.token_address,
-          "from_address": queryResults[i].attributes.from_address,
-          "to_address": queryResults[i].attributes.to_address,
-          "created_at": queryResults[i].attributes.createdAt,
-          "value": queryResults2[j].attributes.value
-        });
-      }
-    }
+    results.push({
+      "tokenId": queryResults[i].attributes.token_id,
+      "tokenAddress": queryResults[i].attributes.token_address,
+      "from_address": queryResults[i].attributes.from_address,
+      "to_address": queryResults[i].attributes.to_address,
+      "created_at": queryResults[i].attributes.createdAt,
+      "transaction_hash": queryResults[i].attributes.transaction_hash
+     });
   }
   return results;
+});
+
+Moralis.Cloud.define("getTransactionValue", async (request) => {
+  const query = new Moralis.Query("EthTransactions");
+  query.equalTo("hash", request.params.tran_hash);
+  const queryResults = await query.find();
+  const results = [];
+  for (let i = 0; i < queryResults.length; ++i) {
+    results.push({
+      "val": queryResults[i].attributes.value,
+     });
+  }
+  return results[0].val;
 });
 
 

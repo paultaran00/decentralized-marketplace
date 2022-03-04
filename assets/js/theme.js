@@ -139,6 +139,9 @@ $(document).ready(()=>{
     $('.transactions-table').removeClass('bg-light');
     $('.transactions-table').removeClass('table-light');
 
+    $('#ChartLight').hide();
+    $('#ChartDark').show();
+
     $('.form-control').keydown(()=>{
       $('.form-control').css('color', 'white');
     });
@@ -189,6 +192,9 @@ $(document).ready(()=>{
     $('.transactions-table').addClass('bg-light');
     $('.transactions-table').addClass('table-light');
 
+    $('#ChartDark').hide();
+    $('#ChartLight').show();
+    
     $('.form-control').keydown(()=>{
       $('.form-control').css('color', 'black');
     });

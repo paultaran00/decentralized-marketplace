@@ -277,29 +277,65 @@ a.anchor{
 }
 
 .transactions-table{
+  /* position: absolute; */
   border-radius: 25px;
   cursor: pointer;
+  /* overflow-y: auto;
+  height: 50px; */
   /* height: 10px; */
   /* width: 1200px;               */
   /* display: -moz-groupbox; */
+  width: 100%;
 }
 
+/* thead th {
+  position: sticky;
+  top: 0;
+} */
+
 tbody{
-  overflow-y: scroll;      
+  /* overflow-y: scroll;       */
   /* height: 350px;           */
   /* width: 1350px; */
   /* position: absolute;
   max-height: 50px; */
+  height: 400px;
+  overflow-y: auto;
+  width: 101%;
 }
+
+
+/* cu asta merge scrollu la tbody                                   */
+
+
+/* .transactions-table thead, .transactions-table tbody, .transactions-table tr, .transactions-table td, .transactions-table th {
+  display:block;
+}
+.transactions-table tbody td {
+  float: left;
+}
+.transactions-table thead tr th {
+  float: left;
+} */
 
 .history-activity{
   position: absolute;
   display: inline-block;
   cursor: pointer;
+  display: none;
+  
 }
 
 .price-activity-chart{
   display: none;
+}
+
+.chart-container {
+  /* position: relative; */
+  padding-top: 50px;
+  margin: auto;
+  /* height: 100%; */
+  width: 39vw;
 }
 
 

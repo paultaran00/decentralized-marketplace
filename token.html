@@ -166,20 +166,23 @@
       <div class="transactions row">
         <table class="transactions-table table table-hover table-borderless col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <thead>
-            <tr>
+            <tr style="display: block;">
               <th>Event</th>
-              <th>Price</th>
-              <th>From</th>
-              <th>To</th>
-              <th>Date</th>
+              <th style="padding-left: 33px;">Price</th>
+              <th style="padding-left: 33px;">From</th>
+              <th style="padding-left: 390px;">To</th>
+              <th style="padding-left: 410px;">Date</th>
             </tr>
           </thead>
-          <tbody class="historyTableBody"></tbody>
+          <tbody class="historyTableBody" style="display: block; height: 385px; overflow-y: scroll"></tbody>
         </table>
       </div>
 
       <div class="price-activity-chart">
-
+        <div class="chart-container">
+          <canvas id="ChartDark"></canvas>
+          <canvas id="ChartLight"></canvas>
+        </div>
       </div>
 
       <div id='loader2' class="spinner-border mt-5 text-primary" style="width: 3rem; height: 3rem;" role="status">
