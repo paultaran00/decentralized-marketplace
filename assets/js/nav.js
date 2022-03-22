@@ -3,9 +3,11 @@ $('#searchBtn').click(()=>{
   $('.collapse').removeClass('show');
   $('.navbar-brand').css('display', 'none');
   $('#searchBtn').css('display', 'none');
+  $('#Blogo').hide();
   $('.searchbar').css('display', 'flex');
   $('#exitSearchBtn').css('display', 'block');
   $('.navbar').css('justify-content', 'space-around');
+
 
 });
 
@@ -14,6 +16,7 @@ $('#exitSearchBtn').click(()=>{
   $('.navbar-brand').css('display', 'flex');
   $('#searchBtn').css('display', 'inline-block');
   $('.searchbar').css('display', 'none');
+  $('#Blogo').show();
   $('#exitSearchBtn').css('display', 'none');
   $('.navbar').css('justify-content', 'space-between');
 });

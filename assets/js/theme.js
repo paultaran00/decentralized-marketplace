@@ -36,6 +36,8 @@ $(document).ready(()=>{
 
     $('#profile').css('background', '#525a61');
 
+    $('#Blogo').css('filter', 'invert(100%) sepia(0%) saturate(7500%) hue-rotate(70deg) brightness(109%) contrast(112%)');
+
     $('.description').removeClass('bg-light');
     $('.description').addClass('bg-dark');
 
@@ -81,6 +83,8 @@ $(document).ready(()=>{
 
     $('#profile').css('background', '#e3e6ea');
 
+    $('#Blogo').css('filter', 'invert(0%) sepia(9%) saturate(6%) hue-rotate(214deg) brightness(95%) contrast(101%)');
+
     $('.description').removeClass('bg-dark');
     $('.description').addClass('bg-light');
 
@@ -105,6 +109,8 @@ $(document).ready(()=>{
 
     $('.btn-light').addClass('btn-dark');
     $('.btn-light').removeClass('btn-light');
+
+    $('#Blogo').css('filter', 'invert(100%) sepia(0%) saturate(7500%) hue-rotate(70deg) brightness(109%) contrast(112%)');
 
     $('.card').css({'background': '#2a2a2a', 'border': '1px solid #444'});
 
@@ -158,6 +164,8 @@ $(document).ready(()=>{
 
     $('.btn-dark').addClass('btn-light');
     $('.btn-dark').removeClass('btn-dark');
+
+    $('#Blogo').css('filter', 'invert(0%) sepia(9%) saturate(6%) hue-rotate(214deg) brightness(95%) contrast(101%)');
 
     $('.card').css({'background': 'white', 'border': '1px solid #ddd'});
 
