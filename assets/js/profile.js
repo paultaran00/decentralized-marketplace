@@ -1,11 +1,11 @@
-Moralis.initialize("lKpCEw5WTFl7WvfkSyb5FEJ63p0HYLzGvwKJLCsx"); // Application id
-Moralis.serverURL = 'https://d8qs4ppxbshn.usemoralis.com:2053/server'; //Server url
+Moralis.initialize("4GMdIXDeFU0PlljTjeGxITuChZKaeAZjuxTkBz92"); // Application id
+Moralis.serverURL = 'https://hcvneej5uik2.usemoralis.com:2053/server'; //Server url
 
 const BASE_URL = "https://api.coingecko.com/api/v3";
 const ETH_USD_PRICE_URL = "/simple/price?ids=ethereum&vs_currencies=usd";
-const TokenAddress = "0x749aEd7dB5c8d0Ec47e467a27fe80563c09fec8A";
-const MarketplaceAddress = "0x4f263D009CF8CD6BF2B640457CFd1280F3dc19cB";
-const paymentGatewayAddress = "0x439b0eA62E3d39E2262c9ef464517732E5fCF1b0";
+const TokenAddress = "0xC6543126BB27FB96B9CC9857B49d58a2e1EAD8FE";
+const MarketplaceAddress = "0xe71bB527561bB3ed422240168cD340bf7d105EBA";
+const paymentGatewayAddress = "0x76Df3E71139F164a3250a26c4e174ab1EDBe2050";
 let TokenInstance;
 let MarketplaceInstance;
 let paymentGatewayInstance;
@@ -1250,22 +1250,24 @@ async function getProfileDetails(){
   try{
     let userDetails = await Moralis.Cloud.run('getAllUsers');
     for (i = 0; i < userDetails.length; i++) {
-      if(userDetails[i].ethAddress.toLowerCase() == address.toLowerCase()){
-        let profilePhoto = userDetails[i].profilePhoto;
-        let username = userDetails[i].username;
-        let ethAddress = userDetails[i].ethAddress;
-        let bio = userDetails[i].bio;
-        let twitter = userDetails[i].twitter;
-        let instagram = userDetails[i].instagram;
-        let amountSold = userDetails[i].amountSold;
-        displayProfilePhotoAndBadge(profilePhoto, amountSold);
-        displayUsername(username);
-        displayEthAddress(ethAddress);
-        displayBio(bio);
-        displayTwitter(twitter);
-        displayInstagram(instagram);
-        emailShareProfile(username);
-        facebookShareProfile(username);
+      if(typeof userDetails[i].ethAddress !== "undefined"){
+        if(userDetails[i].ethAddress.toLowerCase() == address.toLowerCase()){
+          let profilePhoto = userDetails[i].profilePhoto;
+          let username = userDetails[i].username;
+          let ethAddress = userDetails[i].ethAddress;
+          let bio = userDetails[i].bio;
+          let twitter = userDetails[i].twitter;
+          let instagram = userDetails[i].instagram;
+          let amountSold = userDetails[i].amountSold;
+          displayProfilePhotoAndBadge(profilePhoto, amountSold);
+          displayUsername(username);
+          displayEthAddress(ethAddress);
+          displayBio(bio);
+          displayTwitter(twitter);
+          displayInstagram(instagram);
+          emailShareProfile(username);
+          facebookShareProfile(username);
+        }
       }
     }
   } catch(err){
