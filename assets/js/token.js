@@ -162,10 +162,16 @@ async function getHistoryInfo(){
     let txhash_list = [];
     let txhash_price = [];
     const params = {
-      idparam: token.slice(token.length - 1),
+      idparam: token.match(/[0-9]+$/)[0],
+      
     };
+    console.log(params.idparam)
     let ArtworkHistory = await Moralis.Cloud.run('getArtworkHistory', params);
+    console.log("---------------------")
+    console.log(token)
+    console.log(params.idparam)
     console.log(ArtworkHistory)
+    console.log("---------------------")
 
     for (i = 0; i < ArtworkHistory.length; i++) {
         console.log(ArtworkHistory.length)
